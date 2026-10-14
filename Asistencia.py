@@ -637,4 +637,262 @@ class GestionAsistencia:
             print(
                 "Registro no encontrado."
             )
+
+    # ======================================================
+    # PARTE 3
+    # INTEGRANTE: OMAR ALEJANDRO LAIME CCACCRO
+    # ROL: CÁLCULOS, DIAGRAMAS E INTEGRACIÓN
+    # ======================================================
+
+
+    # ======================================================
+    # HU05, HU06, HU07, HU08
+    # RESUMEN DE CÁLCULOS
+    # ======================================================
+
+    def resumenCalculos(self):
+
+        print(
+            "\n=========== RESUMEN SEMANAL ==========="
+        )
+
+
+        if not self.listaColaboradores:
+
+            print(
+                "No hay colaboradores registrados."
+            )
+
+            return
+
+
+        print(
+            f"{'Código':<8} "
+            f"{'Nombre':<22} "
+            f"{'Días':>5} "
+            f"{'Hrs.Trab':>9} "
+            f"{'Hrs.Extra':>10}"
+        )
+
+
+        codigos_con_asistencia = set()
+
+
+        for colaborador in self.listaColaboradores:
+
+            registros = (
+                self.buscarAsistenciasPorCodigo(
+                    colaborador.codigo
+                )
+            )
+
+
+            # ----------------------------------------------
+            # CÁLCULO DE DÍAS TRABAJADOS
+            # ----------------------------------------------
+
+            dias_trabajados = len(
+                set(
+                    registro.fecha
+                    for registro in registros
+                )
+            )
+
+
+            # ----------------------------------------------
+            # CÁLCULO DE HORAS TRABAJADAS
+            # ----------------------------------------------
+
+            horas_totales = round(
+                sum(
+                    registro.horas_trabajadas()
+                    for registro in registros
+                ),
+                2
+            )
+
+
+            # ----------------------------------------------
+            # CÁLCULO DE HORAS EXTRA
+            # ----------------------------------------------
+
+            horas_extra = round(
+                max(
+                    0,
+                    horas_totales
+                    - LIMITE_HORAS_SEMANALES
+                ),
+                2
+            )
+
+
+            if registros:
+
+                codigos_con_asistencia.add(
+                    colaborador.codigo
+                )
+
+
+            nombre_corto = (
+                colaborador.nombres[:22]
+            )
+
+
+            print(
+                f"{colaborador.codigo:<8} "
+                f"{nombre_corto:<22} "
+                f"{dias_trabajados:>5} "
+                f"{horas_totales:>9.2f} "
+                f"{horas_extra:>10.2f}"
+            )
+
+
+        print(
+            "========================================"
+        )
+
+
+        print(
+            "Total colaboradores home office "
+            "con registros: "
+            f"{len(codigos_con_asistencia)}"
+        )
+
+
+        print(
+            "Regla de horas extra: más de "
+            f"{LIMITE_HORAS_SEMANALES} "
+            "horas semanales"
+        )
+
+
+    # ======================================================
+    # MENÚ PRINCIPAL
+    # ======================================================
+
+    def menu(self):
+
+        while True:
+
+            print(
+                "\n=========================================="
+            )
+
+            print(
+                "   SISTEMA DE ASISTENCIA HOME OFFICE"
+            )
+
+            print(
+                "   Tottus - Área de Gestión de Procesos"
+            )
+
+            print(
+                "=========================================="
+            )
+
+            print(
+                "1. Registrar colaborador"
+            )
+
+            print(
+                "2. Registrar asistencia"
+            )
+
+            print(
+                "3. Listar todos los registros"
+            )
+
+            print(
+                "4. Buscar por código de usuario"
+            )
+
+            print(
+                "5. Editar registro de asistencia"
+            )
+
+            print(
+                "6. Eliminar registro de asistencia"
+            )
+
+            print(
+                "7. Ver resumen de cálculos"
+            )
+
+            print(
+                "8. Salir"
+            )
+
+            print(
+                "=========================================="
+            )
+
+
+            opcion = input(
+                "Seleccione una opción: "
+            ).strip()
+
+
+            if opcion == "1":
+
+                self.registrarColaborador()
+
+
+            elif opcion == "2":
+
+                self.registrarAsistencia()
+
+
+            elif opcion == "3":
+
+                self.listarAsistencias()
+
+
+            elif opcion == "4":
+
+                self.buscarAsistencia()
+
+
+            elif opcion == "5":
+
+                self.editarAsistencia()
+
+
+            elif opcion == "6":
+
+                self.eliminarAsistencia()
+
+
+            elif opcion == "7":
+
+                self.resumenCalculos()
+
+
+            elif opcion == "8":
+
+                print(
+                    "\nSaliendo del sistema. "
+                    "¡Hasta luego!"
+                )
+
+                break
+
+
+            else:
+
+                print(
+                    "Opción inválida. "
+                    "Intente nuevamente."
+                )
+
+
+# ==========================================================
+# PUNTO DE ENTRADA DEL PROGRAMA
+# INTEGRACIÓN FINAL
+# ==========================================================
+
+if __name__ == "__main__":
+
+    sistema = GestionAsistencia()
+
+    sistema.menu()
          
